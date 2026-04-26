@@ -19,7 +19,7 @@ import warnings
 
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = ""
-os.environ["NEURALPROPHET_DISABLE_CUDA"] = "1"
+os.environ["NEURALPROPHET_DISABLE_CUDA"] = "-1"
 warnings.filterwarnings("ignore")
 
 # ── Page config ──────────────────────────────────────────────────────────────
@@ -981,6 +981,8 @@ def predict_neuralprophet(data, ticker, n_days):
     m = load_neuralprophet_model(ticker)
      # ✅ Forcer CPU sur le modèle NeuralProphet
     m.device = "cpu"
+    if hasattr(m, 'model'):
+        m.model.to("cpu")
 
     series = data[[ticker]].copy().reset_index()
     series.columns = ["ds", "y"]
