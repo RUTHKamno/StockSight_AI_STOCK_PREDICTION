@@ -966,7 +966,7 @@ def load_neuralprophet_model(ticker):
             f"Modèle NeuralProphet introuvable : {model_path}\n"
             "Assurez-vous que le dossier 'models/' est présent dans le répertoire de l'application."
         )
-    model = torch.load(model_path, map_location="cpu",weights_only=False)
+    model = torch.load(model_path, map_location=torch.device('cpu'),weights_only=False)
     return model
 
 def predict_neuralprophet(data, ticker, n_days):
@@ -975,6 +975,7 @@ def predict_neuralprophet(data, ticker, n_days):
     import pandas as pd
 
     m = load_neuralprophet_model(ticker)
+    m.device = "cpu"
 
     series = data[[ticker]].copy().reset_index()
     series.columns = ["ds", "y"]
