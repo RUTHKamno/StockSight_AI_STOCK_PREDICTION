@@ -19,7 +19,7 @@ import warnings
 
 import os
 # os.environ["CUDA_VISIBLE_DEVICES"] = ""
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
 os.environ["NEURALPROPHET_DISABLE_CUDA"] = "1"
 warnings.filterwarnings("ignore")
 
@@ -972,6 +972,12 @@ def load_neuralprophet_model(ticker):
             "Assurez-vous que le dossier 'models/' est présent dans le répertoire de l'application."
         )
     model = torch.load(model_path, map_location=torch.device('cpu'),weights_only=False)
+    # 2. Désactiver explicitement le Trainer (souvent la cause de l'erreur)
+    if hasattr(model, 'trainer'):
+        model.trainer = None 
+        
+    # 3. Forcer le flag device
+    model.device = torch.device('cpu')
     return model
 
 def predict_neuralprophet(data, ticker, n_days):
@@ -981,9 +987,7 @@ def predict_neuralprophet(data, ticker, n_days):
 
     m = load_neuralprophet_model(ticker)
      # ✅ Forcer CPU sur le modèle NeuralProphet
-    m.device = "cpu"
-    if hasattr(m, 'model'):
-        m.model.to("cpu")
+    m.restore_trainer() # Réinitialise le trainer proprement sur l'appareil actuel (CPU)
 
     series = data[[ticker]].copy().reset_index()
     series.columns = ["ds", "y"]
