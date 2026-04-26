@@ -16,6 +16,10 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 import os
 import warnings
+
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
+os.environ["NEURALPROPHET_DISABLE_CUDA"] = "1"
 warnings.filterwarnings("ignore")
 
 # ── Page config ──────────────────────────────────────────────────────────────
@@ -966,8 +970,6 @@ def load_neuralprophet_model(ticker):
             f"Modèle NeuralProphet introuvable : {model_path}\n"
             "Assurez-vous que le dossier 'models/' est présent dans le répertoire de l'application."
         )
-    import os as _os
-    _os.environ["CUDA_VISIBLE_DEVICES"] = ""
     model = torch.load(model_path, map_location=torch.device('cpu'),weights_only=False)
     return model
 
@@ -978,8 +980,6 @@ def predict_neuralprophet(data, ticker, n_days):
 
     m = load_neuralprophet_model(ticker)
      # ✅ Forcer CPU sur le modèle NeuralProphet
-    import os as _os
-    _os.environ["CUDA_VISIBLE_DEVICES"] = ""
     m.device = "cpu"
 
     series = data[[ticker]].copy().reset_index()
