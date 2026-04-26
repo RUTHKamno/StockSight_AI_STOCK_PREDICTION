@@ -18,8 +18,9 @@ import os
 import warnings
 
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = ""
-os.environ["NEURALPROPHET_DISABLE_CUDA"] = "-1"
+# os.environ["CUDA_VISIBLE_DEVICES"] = ""
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+os.environ["NEURALPROPHET_DISABLE_CUDA"] = "1"
 warnings.filterwarnings("ignore")
 
 # ── Page config ──────────────────────────────────────────────────────────────
